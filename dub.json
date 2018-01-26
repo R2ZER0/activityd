@@ -1,0 +1,12 @@
+{
+	"name": "socialserver",
+	"authors": [
+		"Rikki"
+	],
+	"dependencies": {
+		"vibe-d": "~>0.7.30"
+	},
+	"description": "A simple vibe.d server application.",
+	"copyright": "Copyright © 2018, Rikki",
+	"license": "Apache 2.0"
+}
