@@ -9,10 +9,9 @@ import sampledata : generateSampleData;
 void getActor(HTTPServerRequest req, HTTPServerResponse res) @safe {
     //string actorid = req.params["actorid"];
     string actorid = req.fullURL.toString;
-//	res.writeJsonBody(
-//      getObjectById(actorid)
-//  );
-    res.writeBody( getSObjectById(actorid) );
+	res.writeJsonBody(
+        getObjectById(actorid)
+    );
 }
 
 void getActorInbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
