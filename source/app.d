@@ -50,7 +50,7 @@ void hello(HTTPServerRequest req, HTTPServerResponse res) {
 void main() {
 	auto settings = new HTTPServerSettings;
 	settings.port = 8080;
-	settings.bindAddresses = ["::1", "127.0.0.1"];
+	settings.bindAddresses = ["::1", "0.0.0.0"];
 
     logInfo("Loading data.json");
     loadSampleData("data.json");
