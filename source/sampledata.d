@@ -1,5 +1,6 @@
 module sampledata;
 
+import std.file;
 import std.typecons;
 import model : putObject;
 import vibe.data.json;
@@ -26,5 +27,13 @@ Json genActor(string baseUrl,
 
 void generateSampleData() @safe {
     putObject( genActor("http://localhost:8080/actor/", nullable("Test Person")) );
+}
+
+void loadSampleData(string filepath) {
+    string content = readText(filepath);
+    Json sampleObjects = parseJson(content);
+    foreach(Json obj; sampleObjects) {
+        putObject( obj );
+    }
 }
 

@@ -4,75 +4,24 @@ import std.typecons;
 import jsonld :jsonContext;
 import model;
 import activity;
-import sampledata : generateSampleData;
+import sampledata : loadSampleData;
 
-void getActor(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    //string actorid = req.params["actorid"];
-    string actorid = req.fullURL.toString;
-	res.writeJsonBody(
-        getObjectById(actorid)
-    );
-}
+void getObject(HTTPServerRequest req, HTTPServerResponse res) @safe {
+    string objid = req.fullURL.toString;
+    Json obj = getObjectById(objid);
 
-void getActorInbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getObjectById(req.params["actorid"]);
-    res.writeJsonBody(
-        Json([
-            "@context": jsonContext(),
-            "type": Json("OrderedCollection"),
-            "summary": Json("Actor's Inbox"),
-            "orderedItems": actor["inbox"]
-        ])
-    );
-}
-
-void postActorSharedInbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getObjectById(req.params["actorid"]);
-}
-
-void getActorOutbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getObjectById(req.params["actorid"]);
-    res.writeJsonBody(
-        Json([
-            "@context": jsonContext(),
-            "type": Json("OrderedCollection"),
-            "summary": Json("Actor's Outbox"),
-            "orderedItems": actor["outbox"]
-        ])
-    );
-}
-
-void getActorFollowers(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getObjectById(req.params["actorid"]);
-
-    if(actor.has("followers")) {
-        auto followers = getObjectById(actor["followers"]);
-    
-        res.writeJsonBody(
-            Json([
-                "@context": jsonContext(),
-                "type": Json("OrderedCollection"),
-                "summary": Json("Actor's Followers"),
-                "orderedItems": followers
-            ])
-        );
+    if(obj.type == Json.Type.object) {
+    	res.writeJsonBody(obj);
+    } else {
+        res.statusCode = 404;
     }
 }
 
-void getActorFollowing(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getObjectById(req.params["actorid"]);
-    res.writeJsonBody(
-        Json([
-            "@context": jsonContext(),
-            "type": Json("OrderedCollection"),
-            "summary": Json("Actor's Following"),
-            "orderedItems": actor["following"]
-        ])
-    );
-}
+void postObject(HTTPServerRequest req, HTTPServerResponse res) @safe {
+    string objid = req.fullURL.toString;
+    Json obj = getObjectById(objid);
 
-void postActor(Json activity) @safe {
-	
+    res.statusCode = 405;
 }
 
 void hello(HTTPServerRequest req, HTTPServerResponse res) {
@@ -84,22 +33,18 @@ void main() {
 	settings.port = 8080;
 	settings.bindAddresses = ["::1", "127.0.0.1"];
 
-    generateSampleData();
+    logInfo("Loading data.json");
+    loadSampleData("data.json");
+    logInfo("Loaded " ~ objectCache.length.to!string ~ " objects");
 
 	auto router = new URLRouter;
 	router.get("/hello", &hello);
-	router.get("/:actorid/", &getActor);
-    router.get("/:actorid/inbox/", &getActorInbox);
-    router.get("/:actorid/outbox/", &getActorOutbox);
-    router.get("/:actorid/followers/", &getActorFollowers);
-    router.get("/:actorid/following/", &getActorFollowing);
 
-    router.post("/:actorid/sharedinbox/", &postActorSharedInbox);
-
-	router.get("*", serveStaticFiles("public/"));
+	router.get("*", &getObject);
+    router.post("*", &postObject);
 
 	listenHTTP(settings, router);
 
-	logInfo("Please open http://127.0.0.1:8080/ in your browser.");
+	logInfo("Ready");
 	runApplication();
 }

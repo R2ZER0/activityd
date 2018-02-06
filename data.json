@@ -1,0 +1,34 @@
+[
+    {
+        "@context":["https://www.w3.org/ns/activitystreams",{"@language":"en-GB"}],
+        "sharedInbox":"http://localhost:8080/actor/sharedinbox/",
+        "name":"Test Person",
+        "type":"Person",
+        "inbox":"http://localhost:8080/actor/inbox/",
+        "id":"http://localhost:8080/actor/",
+        "outbox":"http://localhost:8080/actor/outbox/",
+        "preferredUsername":null,
+        "followers":"http://localhost:8080/actor/followers/",
+        "following":"http://localhost:8080/actor/following/"
+    },
+    {
+        "type": "Collection",
+        "id": "http://localhost:8080/actor/inbox/",
+        "items": []
+    },
+    {
+        "type": "Collection",
+        "id": "http://localhost:8080/actor/outbox/",
+        "items": []
+    },
+    {
+        "type": "Collection",
+        "id": "http://localhost:8080/actor/followers/",
+        "items": []
+    },
+    {
+        "type": "Collection",
+        "id": "http://localhost:8080/actor/following/",
+        "items": []
+    }
+]
