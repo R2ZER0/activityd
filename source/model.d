@@ -1,33 +1,15 @@
 module model;
+
 import vibe.data.json;
-import jsonld : jsonContext;
+import activity;
 
-struct Actor {
-	string id;
-	string type = "Person";
-    string name;
-    string preferredUsername;
-	Json[] inbox = [];
-	Json[] outbox = [];
-	string[] following = [];
-	string[] followers = [];
+Json[string] objectCache;
+
+Json getObjectById(string id) @safe {
+    return objectCache[id];
 }
 
-Actor[string] actors;
-
-static this() {
-	actors = [
-		"rikki": Actor("https://rikkiguy.me.uk/", "Person", "Rikki", "R2ZER0")
-	];
+bool putObject(Json obj) @safe {
+    objectCache[obj.id.get] = obj;
+    return true;
 }
-
-public Actor getActorById(string actorId) @safe {
-    return actors[actorId];
-}
-
-public size_t putInOutbox(string actorId, Json activity) @safe {
-    auto outbox = actors[actorId].outbox;
-	outbox ~= activity;
-	return outbox.length - 1;
-}
-

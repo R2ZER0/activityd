@@ -1,35 +1,19 @@
 import vibe.vibe;
 import vibe.data.json;
+import std.typecons;
 import jsonld :jsonContext;
-import model : Actor, getActorById;
-
-URL appendUrl(URL url, string extra) @safe {
-    URL newUrl = url;
-    newUrl.pathString = url.pathString ~ extra;
-    return newUrl;
-}
+import model : getObjectById;
+import activity;
 
 void getActor(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    string actorid = req.params["actorid"];
-    auto actor = getActorById(actorid);
+    //string actorid = req.params["actorid"];
 	res.writeJsonBody(
-        Json([
-            "@context": jsonContext(),
-            "id": actor.id.serializeToJson(),
-            "type": actor.type.serializeToJson(),
-            "name": actor.name.serializeToJson(),
-            "preferredUsername": actor.preferredUsername.serializeToJson(),
-            "inbox": appendUrl(req.fullURL, "inbox/").serializeToJson(),
-            "sharedInbox": appendUrl(req.fullURL, "sharedinbox/").serializeToJson(),
-            "outbox": appendUrl(req.fullURL, "outbox/").serializeToJson(),
-            "following": appendUrl(req.fullURL, "following/").serializeToJson(),
-            "followers": appendUrl(req.fullURL, "followers/").serializeToJson()
-        ])
+        generateActorObject(req.fullURL, nullable("Test Person"))
     );
 }
 
 void getActorInbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getActorById(req.params["actorid"]);
+    auto actor = getObjectById(req.params["actorid"]);
     res.writeJsonBody(
         Json([
             "@context": jsonContext(),
@@ -41,11 +25,11 @@ void getActorInbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
 }
 
 void postActorSharedInbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getActorById(req.params["actorid"]);
+    auto actor = getObjectById(req.params["actorid"]);
 }
 
 void getActorOutbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getActorById(req.params["actorid"]);
+    auto actor = getObjectById(req.params["actorid"]);
     res.writeJsonBody(
         Json([
             "@context": jsonContext(),
@@ -57,7 +41,7 @@ void getActorOutbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
 }
 
 void getActorFollowers(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getActorById(req.params["actorid"]);
+    auto actor = getObjectById(req.params["actorid"]);
     res.writeJsonBody(
         Json([
             "@context": jsonContext(),
@@ -69,7 +53,7 @@ void getActorFollowers(HTTPServerRequest req, HTTPServerResponse res) @safe {
 }
 
 void getActorFollowing(HTTPServerRequest req, HTTPServerResponse res) @safe {
-    auto actor = getActorById(req.params["actorid"]);
+    auto actor = getObjectById(req.params["actorid"]);
     res.writeJsonBody(
         Json([
             "@context": jsonContext(),
