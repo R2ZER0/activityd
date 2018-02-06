@@ -1,0 +1,10 @@
+language: d
+d:
+  - dmd
+services:
+  - docker
+script:
+  - dub build
+  - docker build -t r2zer0/activityd:latest .
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - docker push r2zer0/activityd:latest
