@@ -6,34 +6,6 @@ import activity;
 
 Json[string] objectCache;
 
-Nullable!string getObjectId(Json obj) @safe {
-    if(obj.type == Json.Type.string) {
-        return nullable(obj.get!string);
-
-    } else if(obj.type == Json.Type.object) {
-
-        if("id" in obj) {
-            return nullable(obj["id"].get!string);
-        } else if("@id" in obj) {
-            return nullable(obj["@id"].get!string);
-        } else {
-            return Nullable!string();
-        }
-
-    } else {
-        return Nullable!string();
-    }
-}
-
-Nullable!string getObjectType(Json obj) @safe {
-    if("type" in obj) {
-        return nullable(obj["type"].get!string);
-    } else if("@type" in obj) {
-        return nullable(obj["@type"].get!string);
-    } else {
-        return Nullable!string();
-    }
-}
 
 Json getObjectById(string id) @safe {
     if(id in objectCache) {
@@ -49,8 +21,8 @@ Json getObjectById(Json obj) @safe {
     if(obj.type == Json.Type.null_) {
         return Json(null);
 
-    if(obj.type == Json.Type.object) {
-        objId = getObjectId(obj);
+    } else if(obj.type == Json.Type.object) {
+        objId = obj.objId;
 
     } else if(obj.type == Json.Type.string) {
         objId = nullable(obj.get!string);
@@ -64,7 +36,7 @@ Json getObjectById(Json obj) @safe {
 }
 
 bool putObject(Json obj) @safe {
-    auto objId = getObjectId(obj);
+    auto objId = obj.objId;
 
     if(objId.isNull) {
         return false;
