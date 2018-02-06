@@ -2,14 +2,17 @@ import vibe.vibe;
 import vibe.data.json;
 import std.typecons;
 import jsonld :jsonContext;
-import model : getObjectById;
+import model;
 import activity;
+import sampledata : generateSampleData;
 
 void getActor(HTTPServerRequest req, HTTPServerResponse res) @safe {
     //string actorid = req.params["actorid"];
-	res.writeJsonBody(
-        generateActorObject(req.fullURL, nullable("Test Person"))
-    );
+    string actorid = req.fullURL.toString;
+//	res.writeJsonBody(
+//      getObjectById(actorid)
+//  );
+    res.writeBody( getSObjectById(actorid) );
 }
 
 void getActorInbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
@@ -19,7 +22,7 @@ void getActorInbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
             "@context": jsonContext(),
             "type": Json("OrderedCollection"),
             "summary": Json("Actor's Inbox"),
-            "orderedItems": actor.inbox.serializeToJson()
+            "orderedItems": actor["inbox"]
         ])
     );
 }
@@ -35,21 +38,26 @@ void getActorOutbox(HTTPServerRequest req, HTTPServerResponse res) @safe {
             "@context": jsonContext(),
             "type": Json("OrderedCollection"),
             "summary": Json("Actor's Outbox"),
-            "orderedItems": actor.outbox.serializeToJson()
+            "orderedItems": actor["outbox"]
         ])
     );
 }
 
 void getActorFollowers(HTTPServerRequest req, HTTPServerResponse res) @safe {
     auto actor = getObjectById(req.params["actorid"]);
-    res.writeJsonBody(
-        Json([
-            "@context": jsonContext(),
-            "type": Json("OrderedCollection"),
-            "summary": Json("Actor's Followers"),
-            "orderedItems": actor.followers.serializeToJson()
-        ])
-    );
+
+    if(actor.has("followers")) {
+        auto followers = getObjectById(actor["followers"]);
+    
+        res.writeJsonBody(
+            Json([
+                "@context": jsonContext(),
+                "type": Json("OrderedCollection"),
+                "summary": Json("Actor's Followers"),
+                "orderedItems": followers
+            ])
+        );
+    }
 }
 
 void getActorFollowing(HTTPServerRequest req, HTTPServerResponse res) @safe {
@@ -59,7 +67,7 @@ void getActorFollowing(HTTPServerRequest req, HTTPServerResponse res) @safe {
             "@context": jsonContext(),
             "type": Json("OrderedCollection"),
             "summary": Json("Actor's Following"),
-            "orderedItems": actor.following.serializeToJson()
+            "orderedItems": actor["following"]
         ])
     );
 }
@@ -76,6 +84,8 @@ void main() {
 	auto settings = new HTTPServerSettings;
 	settings.port = 8080;
 	settings.bindAddresses = ["::1", "127.0.0.1"];
+
+    generateSampleData();
 
 	auto router = new URLRouter;
 	router.get("/hello", &hello);

@@ -10,3 +10,7 @@ URL appendUrl(URL url, string extra) @safe {
     return newUrl;
 }
 
+string appendUrl(string url, string extra) @safe {
+    return url ~ extra;
+}
+
