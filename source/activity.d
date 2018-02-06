@@ -22,6 +22,13 @@ bool isActor(string type) pure @safe {
     );
 }
 
+bool isCollection(string type) pure @safe {
+    return (
+        type == "Collection",
+        type == "OrderedCollection"
+    );
+}
+
 bool isActor(Json obj) @safe {
     if("type" in obj) {
         return isActor(obj["type"].get!string);

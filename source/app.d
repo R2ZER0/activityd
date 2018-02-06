@@ -20,7 +20,29 @@ void getObject(HTTPServerRequest req, HTTPServerResponse res) @safe {
 void postObject(HTTPServerRequest req, HTTPServerResponse res) @safe {
     string objid = req.fullURL.toString;
     Json obj = getObjectById(objid);
+    
+    // is this a real object?
+    if(obj.type != Json.Type.object) {
+        res.statusCode = 404;
+        return;
+    }
 
+    // Can we post to this object?
+    // is it an inbox?
+    if(obj.has("attributedTo")) {
+        auto actor = getObjectById(obj["attributedTo"]);
+        if(actor.has("inbox")) {
+            auto inbox = getObjectId(actor["inbox"]);
+            if(!inbox.isNull) {
+                if(inbox.get() == objid) {
+                    // Attempted post to inbox for actor
+                }
+            }
+        }
+    }
+
+
+    // Otherwise...
     res.statusCode = 405;
 }
 

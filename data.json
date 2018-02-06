@@ -14,21 +14,25 @@
     {
         "type": "Collection",
         "id": "http://localhost:8080/actor/inbox/",
-        "items": []
+        "items": [],
+        "attributedTo": "http://localhost:8080/actor/"
     },
     {
         "type": "Collection",
         "id": "http://localhost:8080/actor/outbox/",
+        "attributedTo": "http://localhost:8080/actor/",
         "items": []
     },
     {
         "type": "Collection",
         "id": "http://localhost:8080/actor/followers/",
+        "attributedTo": "http://localhost:8080/actor/",
         "items": []
     },
     {
         "type": "Collection",
         "id": "http://localhost:8080/actor/following/",
+        "attributedTo": "http://localhost:8080/actor/",
         "items": []
     }
 ]

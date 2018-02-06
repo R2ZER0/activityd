@@ -7,10 +7,19 @@ import activity;
 Json[string] objectCache;
 
 Nullable!string getObjectId(Json obj) @safe {
-    if("id" in obj) {
-        return nullable(obj["id"].get!string);
-    } else if("@id" in obj) {
-        return nullable(obj["@id"].get!string);
+    if(obj.type == Json.Type.string) {
+        return nullable(obj.get!string);
+
+    } else if(obj.type == Json.Type.object) {
+
+        if("id" in obj) {
+            return nullable(obj["id"].get!string);
+        } else if("@id" in obj) {
+            return nullable(obj["@id"].get!string);
+        } else {
+            return Nullable!string();
+        }
+
     } else {
         return Nullable!string();
     }
@@ -35,12 +44,23 @@ Json getObjectById(string id) @safe {
 }
 
 Json getObjectById(Json obj) @safe {
-    auto objId = getObjectId(obj);
+    Nullable!string objId;
+
+    if(obj.type == Json.Type.null_) {
+        return Json(null);
+
+    if(obj.type == Json.Type.object) {
+        objId = getObjectId(obj);
+
+    } else if(obj.type == Json.Type.string) {
+        objId = nullable(obj.get!string);
+    }
+
     if(!objId.isNull) {
         return getObjectById(objId.get);
     } else {
         return Json(null);
-    }
+    }    
 }
 
 bool putObject(Json obj) @safe {
