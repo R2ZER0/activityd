@@ -30,10 +30,12 @@ void generateSampleData() @safe {
 }
 
 void loadSampleData(string filepath) {
+    if(exists(filepath)) {
     string content = readText(filepath);
     Json sampleObjects = parseJson(content);
     foreach(Json obj; sampleObjects) {
         putObject( obj );
+    }
     }
 }
 
