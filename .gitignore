@@ -1,14 +1,44 @@
+activityd
+
+# Created by https://www.gitignore.io/api/d,vim
+
+### D ###
+# Compiled Object files
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+
+# DUB
 .dub
 docs.json
 __dummy.html
 docs/
-socialserver.so
-socialserver.dylib
-socialserver.dll
-socialserver.a
-socialserver.lib
-socialserver-test-*
-*.exe
-*.o
-*.obj
+
+# Code coverage
 *.lst
+
+### Vim ###
+# swap
+.sw[a-p]
+.*.sw[a-p]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
+
+
+# End of https://www.gitignore.io/api/d,vim

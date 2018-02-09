@@ -6,6 +6,11 @@ import vibe.data.json;
 ///////////////////////////////////////////////////////////////////////////////
 // Easy access
 ///////////////////////////////////////////////////////////////////////////////
+bool isJsonNull(Json obj) @safe { return (obj.type == Json.Type.null_); }
+bool isJsonObject(Json obj) @safe { return obj.type == Json.Type.object; }
+bool isJsonString(Json obj) @safe { return obj.type == Json.Type.string; }
+bool isJsonArray(Json obj) @safe { return obj.type == Json.Type.array; }
+
 bool has(Json obj, string prop) @safe {
     return (obj.type == Json.Type.object && prop in obj);
 }
@@ -38,5 +43,3 @@ Nullable!string objType(Json obj) @safe {
         return Nullable!string();
     }
 }
-
-

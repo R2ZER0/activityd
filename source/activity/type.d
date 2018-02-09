@@ -8,10 +8,6 @@ import activity.object;
 // Type Checking
 ///////////////////////////////////////////////////////////////////////////////
 
-bool isJsonObject(Json obj) @safe {
-    return obj.type == Json.Type.object;
-}
-
 bool isa(string typec, string type) pure @safe {
     if(typec == "Object") {
         return (type != "Link");

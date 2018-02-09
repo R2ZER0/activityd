@@ -1,17 +1,23 @@
 import vibe.vibe;
 import vibe.data.json;
 import std.typecons;
+import std.process : environment;
 import jsonld :jsonContext;
 import model;
 import activity;
+import activity.db : ActivityDB;
 import sampledata : loadSampleData;
+import activity.postman.client;
+import activity.pub.server;
+
+ActivityDB adb;
 
 void getObject(HTTPServerRequest req, HTTPServerResponse res) @safe {
     string objid = req.fullURL.toString;
-    Json obj = getObjectById(objid);
+    if(adb.has(objid)) {
+        Json obj = adb.get(objid);
+        res.writeJsonBody(obj);
 
-    if(obj.type == Json.Type.object) {
-    	res.writeJsonBody(obj);
     } else {
         res.statusCode = 404;
     }
@@ -45,16 +51,27 @@ void postObject(HTTPServerRequest req, HTTPServerResponse res) @safe {
 
 void hello(HTTPServerRequest req, HTTPServerResponse res) {
 	res.writeBody("Hello, ActivityPub world!");
+    auto client = new PostmanClient(environment["POSTMAN_POSTQUEUE"]);
+    client.queueForDelivery(
+        Json([
+            "id": Json("http://localhost:8080/test"),
+            "type": Json("Create"),
+            "object": Json([
+                "type": Json("Note"),
+                "content": Json("Hi!")
+            ]),
+            "to": Json([Json("http://localhost:8080/actor/")]),
+            "cc": Json("http://localhost:8080/actor2/")
+        ])
+    );
 }
 
 void main() {
-	auto settings = new HTTPServerSettings;
-	settings.port = 8080;
-	settings.bindAddresses = ["::1", "0.0.0.0"];
+    adb = new ActivityDB();
 
     logInfo("Loading data.json");
-    loadSampleData("data.json");
-    logInfo("Loaded " ~ objectCache.length.to!string ~ " objects");
+    loadSampleData("data.json", adb);
+    logInfo("Loaded " ~ adb.objects.length.to!string ~ " objects");
 
 	auto router = new URLRouter;
 	router.get("/hello", &hello);
@@ -62,7 +79,10 @@ void main() {
 	router.get("*", &getObject);
     router.post("*", &postObject);
 
-	listenHTTP(settings, router);
+	auto settings = new HTTPServerSettings;
+	settings.port = 8080;
+	settings.bindAddresses = ["::1", "0.0.0.0"];
+    listenHTTP(settings, router);
 
 	logInfo("Ready");
 	runApplication();

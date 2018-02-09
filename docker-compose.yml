@@ -1,0 +1,22 @@
+version: "2.0"
+
+services:
+    activityd:
+        image: r2zer0/activityd
+        environment:
+            POSTMAN_POSTQUEUE: "host=postqueue dbname=postqueue user=postqueue password=postpass"
+        ports:
+            - 8080
+
+    postqueue:
+        image: r2zer0/activityd-postman-queue
+        environment:
+            POSTGRES_USER: "postqueue"
+            POSTGRES_PASSWORD: "postpass"
+            POSTGRES_DB: "postqueue"
+        volumes:
+            postqueue_data:/var/lib/postgresql/data
+
+volumes:
+    postqueue_data: {}
+        

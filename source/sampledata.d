@@ -6,6 +6,7 @@ import model : putObject;
 import vibe.data.json;
 import utils;
 import jsonld : jsonContext;
+import activity.db : ActivityDB;
 
 Json genActor(string baseUrl,
                          Nullable!string name = Nullable!string(),
@@ -29,13 +30,13 @@ void generateSampleData() @safe {
     putObject( genActor("http://localhost:8080/actor/", nullable("Test Person")) );
 }
 
-void loadSampleData(string filepath) {
+void loadSampleData(string filepath, ActivityDB db) {
     if(exists(filepath)) {
-    string content = readText(filepath);
-    Json sampleObjects = parseJson(content);
-    foreach(Json obj; sampleObjects) {
-        putObject( obj );
-    }
+        string content = readText(filepath);
+        Json sampleObjects = parseJson(content);
+        foreach(Json obj; sampleObjects) {
+            db.put( obj );
+        }
     }
 }
 
