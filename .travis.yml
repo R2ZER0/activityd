@@ -7,5 +7,5 @@ script:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker build -t r2zer0/activityd:latest -f Dockerfile .
   - docker push r2zer0/activityd:latest
-  - docker build -t r2zer0/activityd-postman-postqueue -f Dockerfile.postqueue .
-  - docker push r2zer0/activityd-postman-postqueue
+  - docker build -t r2zer0/activityd-database -f Dockerfile.database .
+  - docker push r2zer0/activityd-database

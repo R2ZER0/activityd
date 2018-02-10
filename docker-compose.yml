@@ -8,8 +8,8 @@ services:
         ports:
             - 8080
 
-    postqueue:
-        image: r2zer0/activityd-postman-queue
+    database:
+        image: r2zer0/activityd-database
         environment:
             POSTGRES_USER: "postqueue"
             POSTGRES_PASSWORD: "postpass"
